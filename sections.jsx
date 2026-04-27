@@ -1,1340 +1,584 @@
-/* ============================================================
-   AMBIKIRA — editorial premium
-   ============================================================ */
-
-:root {
-  /* Default palette: Midnight (navy + lime) */
-  --bg: #0A1628;
-  --bg-soft: #0F1E36;
-  --bg-elev: #14253F;
-  --paper: #F4EFE6;
-  --paper-soft: #EAE2D2;
-  --ink: #0A1628;
-  --ink-soft: #2A3A52;
-  --rule: rgba(244, 239, 230, 0.14);
-  --rule-strong: rgba(244, 239, 230, 0.32);
-  --text: #E8E2D5;
-  --text-soft: #A9AFBC;
-  --text-mute: #6B7384;
-  --accent: #D4FF3A;            /* lime */
-  --accent-ink: #0A1628;
-  --accent-soft: #B8E02E;
-  --accent-2: #FF6B35;          /* secondary punch */
-  --hairline: 1px;
-  --container: 1440px;
-  --gutter: clamp(20px, 4vw, 64px);
-
-  --serif: "Fraunces", "Times New Roman", serif;
-  --serif-display: "Fraunces", "Times New Roman", serif;
-  --sans: "Inter Tight", "Helvetica Neue", system-ui, sans-serif;
-  --mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
-  --instrument: "Instrument Serif", "Times New Roman", serif;
-}
-
-/* ---------- Reset ---------- */
-*, *::before, *::after { box-sizing: border-box; }
-html, body { margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
-img, svg { max-width: 100%; display: block; }
-button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; padding: 0; }
-a { color: inherit; text-decoration: none; }
-
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--sans);
-  font-size: 16px;
-  line-height: 1.55;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  font-feature-settings: "ss01", "ss02", "cv11";
-  text-rendering: optimizeLegibility;
-  overflow-x: hidden;
-}
-
-::selection { background: var(--accent); color: var(--accent-ink); }
-
-/* ---------- Layout primitives ---------- */
-.container {
-  max-width: var(--container);
-  margin: 0 auto;
-  padding-left: var(--gutter);
-  padding-right: var(--gutter);
-}
-
-.rule {
-  height: var(--hairline);
-  background: var(--rule);
-  width: 100%;
-  border: 0;
-  margin: 0;
-}
-.rule--strong { background: var(--rule-strong); }
-
-/* ---------- Type system ---------- */
-.kicker {
-  font-family: var(--mono);
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--accent);
-}
-
-.kicker--ink { color: var(--ink); }
-.kicker--mute { color: var(--text-mute); }
-
-.eyebrow-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--text-mute);
-}
-.eyebrow-row .dot {
-  width: 6px; height: 6px; border-radius: 50%;
-  background: var(--accent);
-  flex: none;
-  box-shadow: 0 0 0 4px rgba(212, 255, 58, 0.12);
-}
-
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--serif-display);
-  font-weight: 400;
-  letter-spacing: -0.02em;
-  line-height: 1.02;
-  margin: 0;
-  text-wrap: balance;
-}
-
-.display {
-  font-family: var(--serif-display);
-  font-weight: 300;
-  font-size: clamp(64px, 11vw, 184px);
-  line-height: 0.92;
-  letter-spacing: -0.035em;
-  font-variation-settings: "opsz" 144, "SOFT" 30;
-}
-.display em {
-  font-style: italic;
-  font-weight: 300;
-  color: var(--accent);
-  font-variation-settings: "opsz" 144, "SOFT" 100;
-}
-
-.h-section {
-  font-size: clamp(40px, 5.6vw, 84px);
-  font-weight: 300;
-  letter-spacing: -0.025em;
-  line-height: 0.98;
-  font-variation-settings: "opsz" 144, "SOFT" 50;
-}
-.h-section em {
-  font-style: italic;
-  color: var(--accent);
-  font-variation-settings: "opsz" 144, "SOFT" 100;
-}
-
-.h-card {
-  font-family: var(--serif);
-  font-weight: 400;
-  font-size: clamp(22px, 2vw, 30px);
-  letter-spacing: -0.015em;
-  line-height: 1.1;
-}
-
-.lede {
-  font-family: var(--serif);
-  font-weight: 300;
-  font-size: clamp(18px, 1.5vw, 24px);
-  line-height: 1.4;
-  color: var(--text);
-  letter-spacing: -0.01em;
-  text-wrap: pretty;
-  max-width: 60ch;
-}
-
-p { text-wrap: pretty; }
-
-.body-text {
-  font-size: 16px;
-  line-height: 1.6;
-  color: var(--text-soft);
-  max-width: 62ch;
-}
-
-.numeric {
-  font-family: var(--serif-display);
-  font-weight: 300;
-  font-variation-settings: "opsz" 144, "SOFT" 0;
-  font-feature-settings: "tnum", "lnum";
-  letter-spacing: -0.04em;
-  line-height: 0.85;
-}
-
-.mono {
-  font-family: var(--mono);
-  font-feature-settings: "tnum";
-}
-
-/* ---------- Nav ---------- */
-.nav {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 50;
-  backdrop-filter: blur(20px) saturate(140%);
-  -webkit-backdrop-filter: blur(20px) saturate(140%);
-  background: color-mix(in oklab, var(--bg) 72%, transparent);
-  border-bottom: 1px solid var(--rule);
-  transition: transform 0.4s cubic-bezier(.2,.8,.2,1);
-}
-.nav-inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 64px;
-  gap: 32px;
-  overflow: hidden;
-}
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-family: var(--serif);
-  font-weight: 500;
-  font-size: 18px;
-  letter-spacing: -0.02em;
-  color: var(--text);
-  min-width: 0;
-  flex-shrink: 1;
-}
-img.brand-logo {
-  height: 22px !important;
-  max-height: 22px !important;
-  width: auto !important;
-  max-width: 200px;
-  display: block;
-  object-fit: contain;
-  filter: brightness(0) invert(1);
-}
-img.brand-logo--lg {
-  height: 36px !important;
-  max-height: 36px !important;
-}
-.section--paper .brand-logo,
-.brand--ink .brand-logo {
-  filter: none;
-}
-.brand small {
-  font-family: var(--mono);
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.16em;
-  color: var(--text-mute);
-  font-weight: 500;
-  padding-left: 10px;
-  margin-left: 4px;
-  border-left: 1px solid var(--rule-strong);
-}
-
-.nav-links {
-  display: flex;
-  gap: 28px;
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--text-soft);
-}
-.nav-links a {
-  position: relative;
-  padding: 4px 0;
-  transition: color 0.2s;
-}
-.nav-links a::after {
-  content: "";
-  position: absolute;
-  left: 0; right: 100%;
-  bottom: -2px;
-  height: 1px;
-  background: var(--accent);
-  transition: right 0.4s cubic-bezier(.2,.8,.2,1);
-}
-.nav-links a:hover { color: var(--text); }
-.nav-links a:hover::after { right: 0; }
-
-.nav-cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
-  border-radius: 999px;
-  background: var(--accent);
-  color: var(--accent-ink);
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  font-weight: 600;
-  transition: transform 0.2s;
-}
-.nav-cta:hover { transform: translateY(-1px); }
-
-@media (max-width: 880px) {
-  .nav-links { display: none; }
-}
-
-/* ---------- HERO ---------- */
-.hero {
-  position: relative;
-  padding: clamp(120px, 18vh, 200px) 0 clamp(40px, 6vh, 80px);
-  overflow: hidden;
-}
-.hero-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: clamp(32px, 4vw, 64px);
-}
-.hero-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 24px;
-  align-items: center;
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--text-mute);
-}
-.hero-meta .pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 12px;
-  border: 1px solid var(--rule-strong);
-  border-radius: 999px;
-}
-.hero-meta .pill .dot {
-  width: 6px; height: 6px; border-radius: 50%;
-  background: var(--accent);
-  animation: pulse 2.4s ease-in-out infinite;
-}
-@keyframes pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: .55; transform: scale(0.85); }
-}
-
-.hero h1 {
-  margin-top: 8px;
-}
-
-.hero-foot {
-  display: grid;
-  grid-template-columns: 1.4fr 1fr;
-  gap: clamp(32px, 5vw, 88px);
-  align-items: end;
-  padding-top: 32px;
-  border-top: 1px solid var(--rule);
-}
-@media (max-width: 880px) {
-  .hero-foot { grid-template-columns: 1fr; gap: 32px; }
-}
-
-.scroll-cue {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--text-mute);
-}
-.scroll-cue .arrow {
-  display: inline-block;
-  width: 18px; height: 1px;
-  background: currentColor;
-  position: relative;
-}
-.scroll-cue .arrow::after {
-  content: "";
-  position: absolute;
-  right: 0; top: -3px;
-  width: 7px; height: 7px;
-  border-right: 1px solid currentColor;
-  border-bottom: 1px solid currentColor;
-  transform: rotate(-45deg);
-}
-
-/* ---------- Marquee ---------- */
-.marquee {
-  border-top: 1px solid var(--rule);
-  border-bottom: 1px solid var(--rule);
-  padding: 18px 0;
-  overflow: hidden;
-  white-space: nowrap;
-}
-.marquee-track {
-  display: inline-flex;
-  gap: 56px;
-  animation: marquee 60s linear infinite;
-  font-family: var(--mono);
-  font-size: 12px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--text-soft);
-}
-.marquee-track > span {
-  display: inline-flex;
-  align-items: center;
-  gap: 56px;
-}
-.marquee-track > span::after {
-  content: "◆";
-  color: var(--accent);
-  font-size: 8px;
-}
-@keyframes marquee {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
-}
-
-/* ---------- Section primitive ---------- */
-.section {
-  padding: clamp(80px, 12vh, 160px) 0;
-  position: relative;
-}
-.section--paper {
-  background: var(--paper);
-  color: var(--ink);
-}
-.section--paper .body-text { color: var(--ink-soft); }
-.section--paper .kicker { color: var(--accent-ink); }
-.section--paper .rule { background: rgba(10,22,40,0.14); }
-.section--paper .rule--strong { background: rgba(10,22,40,0.32); }
-.section--paper .h-section em { color: var(--accent-ink); position: relative; }
-.section--paper .h-section em::after {
-  content: "";
-  position: absolute;
-  left: 0; right: 0; bottom: 0.05em;
-  height: 0.32em;
-  background: var(--accent);
-  z-index: -1;
-}
-
-.section-head {
-  display: grid;
-  grid-template-columns: 220px 1fr;
-  gap: clamp(24px, 4vw, 64px);
-  align-items: start;
-  margin-bottom: clamp(48px, 8vh, 96px);
-}
-@media (max-width: 880px) {
-  .section-head { grid-template-columns: 1fr; gap: 16px; }
-}
-.section-head .label {
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--text-mute);
-  display: flex;
-  align-items: baseline;
-  gap: 12px;
-  padding-top: 18px;
-}
-.section-head .label .num {
-  font-family: var(--serif);
-  font-size: 14px;
-  color: var(--accent);
-  font-weight: 500;
-}
-.section--paper .section-head .label { color: var(--ink-soft); }
-.section--paper .section-head .label .num { color: var(--ink); }
-
-/* ---------- Stats grid ---------- */
-.stats {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 0;
-  border-top: 1px solid var(--rule-strong);
-  border-bottom: 1px solid var(--rule-strong);
-}
-.stat {
-  padding: 40px 28px 32px;
-  border-right: 1px solid var(--rule);
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  position: relative;
-  transition: background 0.3s;
-}
-.stat:last-child { border-right: 0; }
-.stat:hover { background: var(--bg-soft); }
-.section--paper .stat:hover { background: var(--paper-soft); }
-.section--paper .stat { border-right-color: rgba(10,22,40,0.14); }
-
-.stat .label-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--text-mute);
-}
-.stat .num-big {
-  font-family: var(--serif-display);
-  font-weight: 200;
-  font-size: clamp(56px, 6vw, 104px);
-  line-height: 0.85;
-  letter-spacing: -0.04em;
-  font-variation-settings: "opsz" 144;
-  color: var(--text);
-}
-.section--paper .stat .num-big { color: var(--ink); }
-.stat .num-big sup {
-  font-size: 0.32em;
-  vertical-align: super;
-  font-weight: 400;
-  letter-spacing: 0;
-  margin-left: 4px;
-  color: var(--accent);
-  font-variation-settings: "opsz" 36;
-}
-.section--paper .stat .num-big sup { color: var(--ink); background: var(--accent); padding: 2px 6px; }
-
-.stat .desc {
-  font-size: 13px;
-  line-height: 1.5;
-  color: var(--text-soft);
-  max-width: 28ch;
-}
-.section--paper .stat .desc { color: var(--ink-soft); }
-
-@media (max-width: 980px) {
-  .stats { grid-template-columns: repeat(2, 1fr); }
-  .stat:nth-child(2) { border-right: 0; }
-  .stat:nth-child(1), .stat:nth-child(2) { border-bottom: 1px solid var(--rule); }
-}
-@media (max-width: 580px) {
-  .stats { grid-template-columns: 1fr; }
-  .stat { border-right: 0; border-bottom: 1px solid var(--rule); }
-  .stat:last-child { border-bottom: 0; }
-}
-
-/* ---------- Programs grid (4 cards) ---------- */
-.programs {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1px;
-  background: var(--rule-strong);
-  border-top: 1px solid var(--rule-strong);
-  border-bottom: 1px solid var(--rule-strong);
-}
-.section--paper .programs { background: rgba(10,22,40,0.18); border-top-color: rgba(10,22,40,0.32); border-bottom-color: rgba(10,22,40,0.32); }
-
-.program {
-  background: var(--bg);
-  padding: 40px 36px 36px;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  transition: background 0.3s, transform 0.4s cubic-bezier(.2,.8,.2,1);
-  position: relative;
-  overflow: hidden;
-  min-height: 380px;
-}
-.section--paper .program { background: var(--paper); }
-
-.program::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at 80% 0%, var(--accent), transparent 50%);
-  opacity: 0;
-  transition: opacity 0.5s;
-  mix-blend-mode: overlay;
-  pointer-events: none;
-}
-.program:hover::before { opacity: 0.18; }
-.program:hover { background: var(--bg-soft); }
-.section--paper .program:hover { background: var(--paper-soft); }
-
-.program .tag {
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--accent);
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-}
-.section--paper .program .tag { color: var(--ink); }
-.section--paper .program .tag::before {
-  content: "";
-  width: 8px; height: 8px;
-  background: var(--accent);
-  border-radius: 50%;
-}
-.program .num {
-  position: absolute;
-  top: 28px; right: 32px;
-  font-family: var(--serif-display);
-  font-weight: 200;
-  font-size: 90px;
-  line-height: 0.8;
-  color: var(--rule-strong);
-  letter-spacing: -0.04em;
-  pointer-events: none;
-  font-variation-settings: "opsz" 144;
-}
-.section--paper .program .num { color: rgba(10,22,40,0.12); }
-
-.program h3 {
-  font-size: clamp(26px, 2.4vw, 36px);
-  font-weight: 400;
-  letter-spacing: -0.02em;
-  line-height: 1.05;
-  max-width: 14ch;
-}
-.program p {
-  font-size: 15px;
-  line-height: 1.55;
-  color: var(--text-soft);
-  margin: 0;
-  max-width: 50ch;
-}
-.section--paper .program p { color: var(--ink-soft); }
-
-.program .meta {
-  margin-top: auto;
-  padding-top: 20px;
-  border-top: 1px solid var(--rule);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--text);
-}
-.section--paper .program .meta { border-top-color: rgba(10,22,40,0.14); color: var(--ink); }
-.program .meta .arrow {
-  width: 28px; height: 28px;
-  border: 1px solid var(--rule-strong);
-  border-radius: 50%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.3s, color 0.3s, transform 0.3s;
-}
-.section--paper .program .meta .arrow { border-color: rgba(10,22,40,0.32); }
-.program:hover .meta .arrow {
-  background: var(--accent);
-  color: var(--accent-ink);
-  border-color: var(--accent);
-  transform: rotate(-45deg);
-}
-
-@media (max-width: 880px) {
-  .programs { grid-template-columns: 1fr; }
-}
-
-/* ---------- Synergy compare ---------- */
-.compare {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1px;
-  background: var(--rule-strong);
-  border: 1px solid var(--rule-strong);
-}
-.compare-col {
-  background: var(--bg);
-  padding: 40px 36px;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-.compare-col--good {
-  background: var(--bg);
-  position: relative;
-  border-left: 4px solid var(--accent);
-}
-.compare-col--good::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(212,255,58,0.08), transparent 60%);
-  pointer-events: none;
-}
-.compare h4 {
-  font-family: var(--serif);
-  font-size: 22px;
-  font-weight: 500;
-  letter-spacing: -0.01em;
-  margin: 0;
-}
-.compare ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-.compare li {
-  font-size: 15px;
-  line-height: 1.55;
-  color: var(--text-soft);
-  padding-left: 28px;
-  position: relative;
-}
-.compare li::before {
-  content: "";
-  position: absolute;
-  left: 0; top: 9px;
-  width: 14px; height: 1px;
-  background: var(--text-mute);
-}
-.compare-col--good li::before { background: var(--accent); height: 2px; top: 8px; }
-
-@media (max-width: 880px) {
-  .compare { grid-template-columns: 1fr; }
-}
-
-/* ---------- Evidence table ---------- */
-.tbl-wrap {
-  border: 1px solid var(--rule-strong);
-  border-radius: 0;
-  overflow: hidden;
-}
-.tbl-controls {
-  padding: 18px 24px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  flex-wrap: wrap;
-  border-bottom: 1px solid var(--rule-strong);
-  background: var(--bg-soft);
-}
-.section--paper .tbl-controls { background: var(--paper-soft); }
-
-.filter-chip {
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  padding: 6px 12px;
-  border: 1px solid var(--rule-strong);
-  border-radius: 999px;
-  color: var(--text-soft);
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.section--paper .filter-chip { color: var(--ink-soft); border-color: rgba(10,22,40,0.32); }
-.filter-chip:hover { color: var(--text); border-color: var(--text); }
-.section--paper .filter-chip:hover { color: var(--ink); border-color: var(--ink); }
-.filter-chip.active {
-  background: var(--accent);
-  color: var(--accent-ink);
-  border-color: var(--accent);
-}
-
-.tbl-search {
-  margin-left: auto;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-family: var(--mono);
-  font-size: 12px;
-  border-bottom: 1px solid var(--rule-strong);
-  padding: 4px 0;
-  min-width: 200px;
-}
-.section--paper .tbl-search { border-bottom-color: rgba(10,22,40,0.32); }
-.tbl-search input {
-  background: transparent;
-  border: 0;
-  outline: 0;
-  color: inherit;
-  font: inherit;
-  flex: 1;
-  letter-spacing: 0.04em;
-}
-.tbl-search input::placeholder { color: var(--text-mute); }
-.section--paper .tbl-search input::placeholder { color: var(--ink-soft); }
-
-table.tbl {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 14px;
-}
-.tbl thead th {
-  text-align: left;
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--text-mute);
-  font-weight: 500;
-  padding: 16px 24px;
-  background: var(--bg-soft);
-  border-bottom: 1px solid var(--rule-strong);
-  white-space: nowrap;
-}
-.section--paper .tbl thead th { background: var(--paper-soft); color: var(--ink-soft); }
-
-.tbl tbody td {
-  padding: 22px 24px;
-  border-bottom: 1px solid var(--rule);
-  vertical-align: top;
-  color: var(--text-soft);
-  line-height: 1.45;
-}
-.section--paper .tbl tbody td { color: var(--ink-soft); border-bottom-color: rgba(10,22,40,0.12); }
-
-.tbl tbody tr {
-  transition: background 0.2s;
-  cursor: default;
-}
-.tbl tbody tr:hover { background: var(--bg-soft); }
-.section--paper .tbl tbody tr:hover { background: var(--paper-soft); }
-
-.tbl tbody td:first-child {
-  font-family: var(--serif);
-  color: var(--text);
-  font-weight: 500;
-  font-size: 17px;
-  letter-spacing: -0.01em;
-}
-.section--paper .tbl tbody td:first-child { color: var(--ink); }
-
-.evidence-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  padding: 4px 10px;
-  border-radius: 999px;
-  border: 1px solid var(--rule-strong);
-  white-space: nowrap;
-}
-.section--paper .evidence-badge { border-color: rgba(10,22,40,0.32); }
-.evidence-badge--high {
-  background: rgba(212,255,58,0.14);
-  color: var(--accent);
-  border-color: rgba(212,255,58,0.4);
-}
-.section--paper .evidence-badge--high { background: var(--accent); color: var(--ink); border-color: var(--accent); }
-.evidence-badge--mid {
-  color: var(--text-soft);
-}
-.section--paper .evidence-badge--mid { color: var(--ink-soft); }
-
-@media (max-width: 880px) {
-  .tbl thead { display: none; }
-  .tbl tbody td {
-    display: block;
-    padding: 8px 20px;
-    border-bottom: 0;
-  }
-  .tbl tbody td:first-child {
-    padding-top: 22px;
-    font-size: 19px;
-  }
-  .tbl tbody td:last-child { padding-bottom: 22px; border-bottom: 1px solid var(--rule); }
-}
-
-/* ---------- ROI / SROI cards ---------- */
-.roi {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1px;
-  background: var(--rule-strong);
-  border-top: 1px solid var(--rule-strong);
-  border-bottom: 1px solid var(--rule-strong);
-}
-.roi-card {
-  background: var(--bg);
-  padding: 36px 28px 32px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  position: relative;
-  min-height: 280px;
-  transition: background 0.3s;
-}
-.roi-card:hover { background: var(--bg-soft); }
-.section--paper .roi-card { background: var(--paper); }
-.section--paper .roi-card:hover { background: var(--paper-soft); }
-
-.roi-card .roi-num {
-  font-family: var(--serif-display);
-  font-weight: 200;
-  font-size: clamp(72px, 7vw, 128px);
-  line-height: 0.85;
-  letter-spacing: -0.04em;
-  font-variation-settings: "opsz" 144;
-  color: var(--text);
-  white-space: nowrap;
-}
-.section--paper .roi-card .roi-num { color: var(--ink); }
-.roi-card .roi-num em {
-  font-style: italic;
-  color: var(--accent);
-  font-variation-settings: "opsz" 144, "SOFT" 100;
-}
-
-.roi-card .roi-org {
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--text);
-  font-weight: 600;
-}
-.section--paper .roi-card .roi-org { color: var(--ink); }
-
-.roi-card .roi-desc {
-  font-size: 14px;
-  line-height: 1.5;
-  color: var(--text-soft);
-  margin-top: auto;
-}
-.section--paper .roi-card .roi-desc { color: var(--ink-soft); }
-
-@media (max-width: 980px) {
-  .roi { grid-template-columns: repeat(2, 1fr); }
-}
-@media (max-width: 580px) {
-  .roi { grid-template-columns: 1fr; }
-}
-
-/* ---------- Two-col bullets (barreiras / sucesso) ---------- */
-.bullets-2 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1px;
-  background: var(--rule-strong);
-  border-top: 1px solid var(--rule-strong);
-  border-bottom: 1px solid var(--rule-strong);
-}
-.bullets-col {
-  background: var(--bg);
-  padding: 40px 36px;
-}
-.section--paper .bullets-col { background: var(--paper); }
-.bullets-col h4 {
-  font-family: var(--serif);
-  font-size: 26px;
-  font-weight: 400;
-  letter-spacing: -0.015em;
-  margin: 0 0 24px;
-  display: flex;
-  align-items: baseline;
-  gap: 14px;
-}
-.bullets-col h4 .marker {
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--accent);
-  font-weight: 500;
-}
-.bullets-col ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-}
-.bullets-col li {
-  font-size: 15px;
-  line-height: 1.5;
-  padding: 18px 0;
-  border-bottom: 1px solid var(--rule);
-  color: var(--text-soft);
-  display: grid;
-  grid-template-columns: 32px 1fr;
-  gap: 12px;
-  align-items: start;
-}
-.section--paper .bullets-col li { border-bottom-color: rgba(10,22,40,0.12); color: var(--ink-soft); }
-.bullets-col li:last-child { border-bottom: 0; }
-.bullets-col li .idx {
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  color: var(--text-mute);
-  padding-top: 3px;
-}
-.bullets-col--good li .idx { color: var(--accent); }
-
-@media (max-width: 880px) {
-  .bullets-2 { grid-template-columns: 1fr; }
-}
-
-/* ---------- Recommendations (numbered manifesto) ---------- */
-.recs {
-  border-top: 1px solid var(--rule-strong);
-}
-.rec {
-  display: grid;
-  grid-template-columns: 120px 1fr 60px;
-  gap: clamp(20px, 4vw, 64px);
-  align-items: baseline;
-  padding: clamp(36px, 5vh, 56px) 0;
-  border-bottom: 1px solid var(--rule-strong);
-  position: relative;
-  cursor: pointer;
-  transition: padding 0.4s cubic-bezier(.2,.8,.2,1);
-}
-.rec::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: var(--accent);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.6s cubic-bezier(.2,.8,.2,1);
-  z-index: 0;
-}
-.rec:hover::before { transform: scaleX(1); }
-.rec:hover .rec-num { color: var(--accent-ink); }
-.rec:hover .rec-title { color: var(--accent-ink); }
-.rec:hover .rec-text { color: var(--accent-ink); }
-.rec:hover .rec-arrow { color: var(--accent-ink); }
-.rec > * { position: relative; z-index: 1; }
-
-.rec-num {
-  font-family: var(--serif-display);
-  font-weight: 200;
-  font-size: clamp(48px, 5vw, 80px);
-  line-height: 1;
-  color: var(--accent);
-  letter-spacing: -0.04em;
-  font-variation-settings: "opsz" 144;
-  font-feature-settings: "tnum";
-  transition: color 0.4s;
-}
-.rec-title {
-  font-family: var(--serif);
-  font-size: clamp(24px, 2.5vw, 38px);
-  font-weight: 400;
-  letter-spacing: -0.02em;
-  line-height: 1.1;
-  margin: 0 0 12px;
-  color: var(--text);
-  transition: color 0.4s;
-}
-.rec-text {
-  font-size: 15px;
-  line-height: 1.55;
-  color: var(--text-soft);
-  margin: 0;
-  max-width: 64ch;
-  transition: color 0.4s;
-}
-.rec-arrow {
-  font-family: var(--serif);
-  font-size: 32px;
-  color: var(--text-mute);
-  text-align: right;
-  transition: color 0.4s, transform 0.4s;
-}
-.rec:hover .rec-arrow { transform: translateX(8px); }
-
-@media (max-width: 720px) {
-  .rec { grid-template-columns: 80px 1fr; }
-  .rec-arrow { display: none; }
-}
-
-/* ---------- CTA ---------- */
-.cta {
-  position: relative;
-  padding: clamp(80px, 12vh, 160px) 0;
-  background: var(--bg);
-  overflow: hidden;
-  border-top: 1px solid var(--rule);
-}
-.cta::before {
-  content: "INSTITUTO AMBIKIRA";
-  position: absolute;
-  bottom: -0.25em;
-  left: -0.04em;
-  font-family: var(--serif-display);
-  font-weight: 200;
-  font-size: clamp(140px, 28vw, 480px);
-  letter-spacing: -0.05em;
-  line-height: 1;
-  color: transparent;
-  -webkit-text-stroke: 1px var(--rule-strong);
-  pointer-events: none;
-  white-space: nowrap;
-  font-variation-settings: "opsz" 144;
-}
-.cta .container { position: relative; z-index: 1; }
-.cta-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: clamp(40px, 6vw, 88px);
-  align-items: end;
-}
-@media (max-width: 880px) {
-  .cta-grid { grid-template-columns: 1fr; }
-}
-.cta h2 {
-  font-size: clamp(40px, 5.6vw, 84px);
-  font-weight: 300;
-  letter-spacing: -0.025em;
-  line-height: 0.98;
-  font-variation-settings: "opsz" 144, "SOFT" 50;
-}
-.cta h2 em { font-style: italic; color: var(--accent); }
-.cta p {
-  font-family: var(--serif);
-  font-size: 19px;
-  line-height: 1.5;
-  color: var(--text-soft);
-  margin: 0 0 32px;
-}
-.cta-actions { display: flex; gap: 16px; flex-wrap: wrap; }
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  padding: 16px 24px;
-  font-family: var(--mono);
-  font-size: 12px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  font-weight: 600;
-  border-radius: 999px;
-  transition: transform 0.2s, background 0.2s;
-}
-.btn-primary {
-  background: var(--accent);
-  color: var(--accent-ink);
-}
-.btn-primary:hover { transform: translateY(-2px); background: var(--accent-soft); }
-.btn-ghost {
-  border: 1px solid var(--rule-strong);
-  color: var(--text);
-}
-.btn-ghost:hover { border-color: var(--text); }
-.btn .arrow { transition: transform 0.3s; }
-.btn:hover .arrow { transform: translateX(4px); }
-
-/* ---------- Footer ---------- */
-footer.foot {
-  padding: 64px 0 40px;
-  background: var(--bg);
-  border-top: 1px solid var(--rule);
-  font-size: 13px;
-  color: var(--text-mute);
-}
-footer.foot .row {
-  display: grid;
-  grid-template-columns: 1.4fr 1fr 1fr 1fr;
-  gap: 40px;
-  padding-bottom: 40px;
-  border-bottom: 1px solid var(--rule);
-  margin-bottom: 24px;
-}
-@media (max-width: 720px) {
-  footer.foot .row { grid-template-columns: 1fr 1fr; }
-}
-footer.foot h5 {
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--text-soft);
-  margin: 0 0 16px;
-  font-weight: 500;
-}
-footer.foot p {
-  font-family: var(--serif);
-  font-size: 16px;
-  line-height: 1.55;
-  color: var(--text-soft);
-  margin: 16px 0 0;
-  max-width: 38ch;
-}
-footer.foot ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
-footer.foot a:hover { color: var(--text); }
-footer.foot .legal {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-/* ---------- Reveal animation ---------- */
-.reveal {
-  opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.8s cubic-bezier(.2,.8,.2,1), transform 0.8s cubic-bezier(.2,.8,.2,1);
-}
-.reveal.visible {
-  opacity: 1;
-  transform: none;
-}
-
-/* ---------- Stagger for stats etc ---------- */
-.reveal[data-d="1"] { transition-delay: 0.05s; }
-.reveal[data-d="2"] { transition-delay: 0.10s; }
-.reveal[data-d="3"] { transition-delay: 0.15s; }
-.reveal[data-d="4"] { transition-delay: 0.20s; }
-
-/* ---------- Hero giant numeral chrome ---------- */
-.hero-overlay-num {
-  position: absolute;
-  right: -2vw; top: 18vh;
-  font-family: var(--instrument);
-  font-style: italic;
-  font-weight: 400;
-  font-size: clamp(280px, 40vw, 720px);
-  line-height: 0.78;
-  color: var(--accent);
-  opacity: 0.92;
-  pointer-events: none;
-  letter-spacing: -0.06em;
-  z-index: 0;
-  user-select: none;
-  mix-blend-mode: normal;
-}
-.hero .container { position: relative; z-index: 1; }
-.hero-overlay-num::after {
-  content: "%";
-  font-size: 0.42em;
-  color: var(--accent);
-  vertical-align: super;
-  margin-left: 4px;
-  font-style: normal;
-}
-@media (max-width: 720px) {
-  .hero-overlay-num { display: none; }
-}
-
-/* Hero variant 2: split */
-.hero-split {
-  display: grid;
-  grid-template-columns: 1.2fr 1fr;
-  gap: clamp(40px, 6vw, 88px);
-  align-items: center;
-}
-.hero-split-visual {
-  border: 1px solid var(--rule-strong);
-  padding: 32px;
-  background: linear-gradient(180deg, var(--bg-soft), var(--bg));
-  position: relative;
-  aspect-ratio: 4/5;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-@media (max-width: 880px) {
-  .hero-split { grid-template-columns: 1fr; }
-  .hero-split-visual { aspect-ratio: auto; }
-}
-
-/* Hero variant 3: full-bleed type */
-.hero-bleed h1 {
-  font-size: clamp(72px, 14vw, 240px);
-  line-height: 0.88;
-  letter-spacing: -0.045em;
-}
-
-/* ---------- Inline data viz (impact bars) ---------- */
-.bars {
-  display: grid;
-  gap: 20px;
-  margin-top: 32px;
-}
-.bar-row {
-  display: grid;
-  grid-template-columns: 200px 1fr 60px;
-  align-items: center;
-  gap: 16px;
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-.bar-track {
-  height: 8px;
-  background: var(--rule);
-  position: relative;
-  overflow: hidden;
-}
-.section--paper .bar-track { background: rgba(10,22,40,0.1); }
-.bar-fill {
-  position: absolute;
-  inset: 0;
-  background: var(--accent);
-  transform-origin: left;
-  transform: scaleX(0);
-  transition: transform 1.4s cubic-bezier(.2,.8,.2,1);
-}
-.visible .bar-fill { transform: scaleX(var(--w, 0.5)); }
-.bar-row .lbl { color: var(--text); }
-.section--paper .bar-row .lbl { color: var(--ink); }
-.bar-row .val { text-align: right; color: var(--accent); font-weight: 600; }
-.section--paper .bar-row .val { color: var(--ink); }
-
-@media (max-width: 720px) {
-  .bar-row { grid-template-columns: 1fr; gap: 6px; }
-}
-
-/* ---------- Pull quote ---------- */
-.pull-quote {
-  padding: clamp(60px, 10vh, 120px) 0;
-  border-top: 1px solid var(--rule);
-  border-bottom: 1px solid var(--rule);
-}
-.pull-quote q {
-  font-family: var(--serif-display);
-  font-weight: 300;
-  font-size: clamp(32px, 4.4vw, 64px);
-  line-height: 1.08;
-  letter-spacing: -0.025em;
-  font-variation-settings: "opsz" 144, "SOFT" 60;
-  display: block;
-  max-width: 28ch;
-  quotes: "“" "”";
-}
-.pull-quote q::before {
-  font-family: var(--instrument);
-  font-style: italic;
-  color: var(--accent);
-  font-size: 1.4em;
-  vertical-align: -0.25em;
-  margin-right: 0.05em;
-}
-.pull-quote q::after { color: var(--accent); }
-.pull-quote em { font-style: italic; color: var(--accent); }
-.pull-quote cite {
-  display: block;
-  margin-top: 24px;
-  font-family: var(--mono);
-  font-size: 12px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--text-mute);
-  font-style: normal;
-}
+/* global React, Stat, Program, BarRow */
+const { useState, useMemo } = React;
+
+// ---------- HERO (3 variants) ----------
+function Hero({ variant = "manifesto" }) {
+  if (variant === "split") return <HeroSplit />;
+  if (variant === "bleed") return <HeroBleed />;
+  return <HeroManifesto />;
+}
+
+function HeroManifesto() {
+  return (
+    <header className="hero">
+      <div className="container">
+        <div className="hero-grid">
+          <div className="hero-meta reveal">
+            <span className="pill"><span className="dot"></span> Relatório de Evidências · 2025</span>
+            <span>Instituto Ambikira / Pesquisa</span>
+            <span>Vol. 01 — Educação &amp; Assistência Social</span>
+          </div>
+
+          <h1 className="display reveal" data-d="1">
+            Eficácia das<br/>
+            <em>Intervenções</em><br/>
+            Multidisciplinares
+          </h1>
+
+          <div className="hero-foot reveal" data-d="2">
+            <p className="lede">
+              Evidências de ensaios controlados aleatórios em países em desenvolvimento mostram que a integração de
+              <em style={{ fontStyle: "italic", color: "var(--accent)" }}> educação, renda e saúde </em>
+              gera impactos superiores e duradouros em comparação com intervenções isoladas.
+            </p>
+            <div>
+              <div className="kicker kicker--mute" style={{ marginBottom: 12 }}>O que você vai ler</div>
+              <div className="mono" style={{ fontSize: 13, color: "var(--text-soft)", lineHeight: 1.7 }}>
+                01 / Crise de aprendizagem<br/>
+                02 / Quatro programas de evidência<br/>
+                03 / Sinergia &amp; integração<br/>
+                04 / Tabela de RCTs<br/>
+                05 / Cinco diretrizes
+              </div>
+            </div>
+          </div>
+
+          <div style={{ marginTop: 64, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 16 }} className="reveal" data-d="3">
+            <a href="#problema" className="scroll-cue">
+              <span className="arrow"></span>
+              Comece a ler
+            </a>
+            <span className="mono" style={{ fontSize: 11, color: "var(--text-mute)", letterSpacing: "0.16em", textTransform: "uppercase" }}>
+              Tempo estimado · 12 min
+            </span>
+          </div>
+        </div>
+      </div>
+    </header>
+  );
+}
+
+function HeroSplit() {
+  return (
+    <header className="hero">
+      <div className="container">
+        <div className="hero-meta reveal" style={{ marginBottom: 48 }}>
+          <span className="pill"><span className="dot"></span> Relatório · 2025</span>
+          <span>Ambikira</span>
+        </div>
+        <div className="hero-split">
+          <div>
+            <h1 className="display reveal" style={{ fontSize: "clamp(56px, 8vw, 120px)" }}>
+              Quando <em>integramos</em>, a pobreza cede.
+            </h1>
+            <p className="lede reveal" data-d="1" style={{ marginTop: 32 }}>
+              Quatro modelos rigorosamente avaliados — TaRL, BRAC, CAMFED e Criança Feliz —
+              demonstram que combinar educação, renda e suporte psicossocial multiplica o impacto.
+            </p>
+          </div>
+          <div className="hero-split-visual reveal" data-d="2">
+            <div className="kicker">Indicador-chave</div>
+            <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <div className="numeric" style={{ fontSize: "clamp(140px, 18vw, 280px)", color: "var(--accent)" }}>
+                12<span style={{ fontSize: "0.5em", color: "var(--text)" }}>:1</span>
+              </div>
+            </div>
+            <div style={{ fontFamily: "var(--serif)", fontSize: 18, color: "var(--text-soft)", lineHeight: 1.4 }}>
+              Retorno social do investimento (SROI) reportado pela <strong style={{ color: "var(--text)" }}>CUFA</strong> em literacia financeira para crianças e adultos.
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+  );
+}
+
+function HeroBleed() {
+  return (
+    <header className="hero hero-bleed">
+      <div className="container">
+        <div className="hero-meta reveal" style={{ marginBottom: 32 }}>
+          <span className="pill"><span className="dot"></span> 2025 · Relatório</span>
+        </div>
+        <h1 className="reveal">
+          O que <em>funciona</em><br/>contra a pobreza.
+        </h1>
+        <p className="lede reveal" data-d="1" style={{ marginTop: 48, fontSize: "clamp(20px, 1.8vw, 28px)" }}>
+          Síntese das evidências mais robustas em educação e assistência social, dos últimos 20 anos de RCTs em países em desenvolvimento.
+        </p>
+      </div>
+    </header>
+  );
+}
+
+// ---------- Section: Problema ----------
+function SectionProblema() {
+  return (
+    <section className="section" id="problema">
+      <div className="container">
+        <div className="section-head">
+          <div className="label"><span className="num">01</span> O problema</div>
+          <div>
+            <h2 className="h-section reveal">
+              A crise de aprendizagem<br/>
+              e a <em>pobreza multidimensional</em>.
+            </h2>
+            <p className="body-text reveal" data-d="1" style={{ marginTop: 24, fontFamily: "var(--serif)", fontSize: 19, lineHeight: 1.5 }}>
+              A vulnerabilidade social não é uma condição unidimensional. Enquanto o acesso à escola cresceu,
+              a qualidade da aprendizagem e o ciclo da pobreza permanecem desafios centrais.
+            </p>
+          </div>
+        </div>
+
+        <div className="stats">
+          <Stat num="70" sup="%" label="Crianças · 10 anos" d="1"
+                desc="das crianças em países de baixa renda não conseguem ler uma história simples aos 10 anos." />
+          <Stat num="2.500" sup="+" label="Catalogadas · 3ie" d="2"
+                desc="avaliações de impacto catalogadas pela 3ie em países de baixa e média renda." />
+          <Stat num="6" label="Países · BRAC" d="3"
+                desc="países avaliados em simultâneo pelo estudo da Abordagem de Graduação." />
+          <Stat num="18–36" label="Meses · Graduação" d="4"
+                desc="de duração dos programas de graduação multidisciplinar com impactos persistentes." />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ---------- Pull Quote ----------
+function PullQuote() {
+  return (
+    <section className="pull-quote">
+      <div className="container">
+        <q className="reveal">
+          Apenas o grupo com pacote completo manteve melhorias <em>15 meses</em> após o fim da intervenção.
+        </q>
+        <cite className="reveal" data-d="1">— Estudo de Burkina Faso · Banco Mundial · RCT</cite>
+      </div>
+    </section>
+  );
+}
+
+// ---------- Section: Programas ----------
+function SectionProgramas() {
+  return (
+    <section className="section" id="programas">
+      <div className="container">
+        <div className="section-head">
+          <div className="label"><span className="num">02</span> Intervenções com evidência</div>
+          <div>
+            <h2 className="h-section reveal">
+              O que <em>funciona</em><br/>— e por quê.
+            </h2>
+            <p className="body-text reveal" data-d="1" style={{ marginTop: 24, fontFamily: "var(--serif)", fontSize: 19, lineHeight: 1.5 }}>
+              Quatro modelos rigorosamente avaliados que combinam educação, renda e suporte psicossocial.
+            </p>
+          </div>
+        </div>
+
+        <div className="programs">
+          <Program tag="Educação" num="01" title="Teaching at the Right Level (TaRL)"
+            desc="Desenvolvido pela Pratham (Índia), o TaRL adapta o ensino ao nível real da criança. Seis avaliações aleatórias em sete estados produziram os maiores ganhos de aprendizagem registrados na literatura."
+            meta="< US$ 10 / criança / ano" d="1" />
+          <Program tag="Assistência Social" num="02" title="Abordagem de Graduação (BRAC)"
+            desc="Integra transferência de ativos, suporte ao consumo, treinamento técnico, coaching domiciliar e poupança ao longo de 18–36 meses. Impactos persistentes comprovados em 6 países por RCTs."
+            meta="Ganhos mantidos por 3 anos" d="2" />
+          <Program tag="Educação + Renda" num="03" title="CAMFED — África Subsaariana"
+            desc="Combina apoio financeiro direto para meninas em situação de pobreza com suporte pedagógico, mentoria e programas de vida. Reduz abandono e melhora escores em inglês e matemática."
+            meta="Empoderamento + aprendizagem" d="3" />
+          <Program tag="DPI Integrado" num="04" title="Criança Feliz (Brasil)"
+            desc="Maior programa global de visitação domiciliar para Desenvolvimento na Primeira Infância, integrando o SUAS com ações multissetoriais. Expandido para mais de 3.000 municípios."
+            meta="57 milhões de visitas / ano" d="4" />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ---------- Section: Sinergia ----------
+function SectionSinergia() {
+  return (
+    <section className="section section--paper" id="sinergia">
+      <div className="container">
+        <div className="section-head">
+          <div className="label"><span className="num">03</span> Sinergia</div>
+          <div>
+            <h2 className="h-section reveal">
+              Por que a <em>integração</em><br/>
+              supera modelos isolados.
+            </h2>
+            <p className="body-text reveal" data-d="1" style={{ marginTop: 24, fontFamily: "var(--serif)", fontSize: 19, lineHeight: 1.5 }}>
+              Estudo do Banco Mundial em Burkina Faso: apenas o grupo com pacote completo —
+              dinheiro + visitas domiciliares — manteve melhorias duradouras em educação e saúde 15 meses após o fim da intervenção.
+            </p>
+          </div>
+        </div>
+
+        <div className="compare reveal">
+          <div className="compare-col">
+            <div className="kicker kicker--ink" style={{ color: "var(--ink-soft)" }}>Intervenções isoladas</div>
+            <h4>Impacto limitado, frequentemente efêmero.</h4>
+            <ul>
+              <li>Transferência de renda: aumenta matrícula, mas impacto em aprendizagem é pequeno ou nulo.</li>
+              <li>TaRL sem suporte familiar: professores resistem a desviar do currículo oficial.</li>
+              <li>Visitas domiciliares sem assistência complementar: insegurança alimentar compromete eficácia.</li>
+              <li>Saúde mental sem rede social: efeitos de curto prazo sem sustentabilidade.</li>
+            </ul>
+          </div>
+          <div className="compare-col compare-col--good">
+            <div className="kicker kicker--ink">Recomendado · Abordagem integrada</div>
+            <h4>Onde uma alavanca falha, três sustentam.</h4>
+            <ul>
+              <li><strong>Cash Plus:</strong> renda + serviços educacionais gera impactos que o dinheiro isolado não produz.</li>
+              <li><strong>Graduação:</strong> coaching + ativos + saúde ataca simultaneamente renda, habilidades e motivação.</li>
+              <li><strong>DPI integrado:</strong> nutrição + estímulo cognitivo + apoio psicossocial nos primeiros anos de vida.</li>
+              <li><strong>Suporte mediador:</strong> 57% do efeito em saúde mental é mediado pela rede social.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div style={{ marginTop: 80 }}>
+          <div className="kicker kicker--ink" style={{ marginBottom: 16 }}>Comparativo de impacto · Avaliações RCT</div>
+          <div className="bars">
+            <BarRow label="Pacote integrado" value="Alto" width="0.96" />
+            <BarRow label="Cash + DPI (Cash Plus)" value="Alto" width="0.84" />
+            <BarRow label="Graduação BRAC" value="Alto" width="0.78" />
+            <BarRow label="Transferência isolada" value="Moderado" width="0.42" />
+            <BarRow label="TaRL sem família" value="Moderado" width="0.36" />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ---------- Section: Evidências (table) ----------
+const EVIDENCE_ROWS = [
+  ["TaRL", "Índia (7 estados)", "Educação", "Maiores ganhos em competências básicas registrados na literatura global", "muito alto"],
+  ["TaRL", "Madagáscar", "Educação", "Melhora significativa nos escores de matemática (3ª série)", "alto"],
+  ["Catch Up", "Zâmbia", "Educação", "Escalado para 1.800 escolas; baixo custo por aluno", "alto"],
+  ["Graduação BRAC", "Gana", "Renda", "+11% consumo total; poupança triplicada; ganhos pós-intervenção", "muito alto"],
+  ["Graduação BRAC", "Etiópia / Índia", "Renda", "Melhora em status psicossocial; aumento de renda não-agrícola", "muito alto"],
+  ["Rede de segurança integrada", "Burkina Faso", "Integrado", "Melhorias duradouras em educação e saúde reprodutiva (pacote completo)", "muito alto"],
+  ["MDT Saúde Mental", "China (rural)", "Saúde", "Redução drástica de ansiedade; 57% do efeito mediado por suporte social", "alto"],
+];
+
+function SectionEvidencias() {
+  const [filter, setFilter] = useState("Todos");
+  const [search, setSearch] = useState("");
+
+  const filtered = useMemo(() => {
+    return EVIDENCE_ROWS.filter(r => {
+      const passF = filter === "Todos" || r[2] === filter;
+      const q = search.toLowerCase().trim();
+      const passS = !q || r.join(" ").toLowerCase().includes(q);
+      return passF && passS;
+    });
+  }, [filter, search]);
+
+  return (
+    <section className="section" id="evidencias">
+      <div className="container">
+        <div className="section-head">
+          <div className="label"><span className="num">04</span> Dados de impacto</div>
+          <div>
+            <h2 className="h-section reveal">
+              Evidências por <em>programa</em><br/>
+              e país.
+            </h2>
+            <p className="body-text reveal" data-d="1" style={{ marginTop: 24, fontFamily: "var(--serif)", fontSize: 19 }}>
+              Resultados de ensaios controlados aleatórios (RCTs) e avaliações quase-experimentais.
+            </p>
+          </div>
+        </div>
+
+        <div className="tbl-wrap reveal">
+          <div className="tbl-controls">
+            {["Todos", "Educação", "Renda", "Integrado", "Saúde"].map(f => (
+              <button
+                key={f}
+                className={"filter-chip" + (filter === f ? " active" : "")}
+                onClick={() => setFilter(f)}>
+                {f}
+              </button>
+            ))}
+            <div className="tbl-search">
+              <span aria-hidden="true">⌕</span>
+              <input
+                type="text"
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                placeholder="Buscar país, programa..."
+              />
+            </div>
+          </div>
+
+          <table className="tbl">
+            <thead>
+              <tr>
+                <th style={{ width: "26%" }}>Programa</th>
+                <th style={{ width: "18%" }}>Localização</th>
+                <th style={{ width: "12%" }}>Domínio</th>
+                <th>Impacto principal</th>
+                <th style={{ width: "16%" }}>Evidência</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.map((r, i) => (
+                <tr key={i}>
+                  <td>{r[0]}</td>
+                  <td>{r[1]}</td>
+                  <td><span className="mono" style={{ fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase" }}>{r[2]}</span></td>
+                  <td>{r[3]}</td>
+                  <td>
+                    <span className={"evidence-badge " + (r[4] === "muito alto" ? "evidence-badge--high" : "evidence-badge--mid")}>
+                      RCT · {r[4]}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+              {filtered.length === 0 && (
+                <tr><td colSpan="5" style={{ textAlign: "center", padding: 48, color: "var(--text-mute)" }}>Nenhum resultado.</td></tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ---------- Section: ROI ----------
+function SectionROI() {
+  return (
+    <section className="section section--paper">
+      <div className="container">
+        <div className="section-head">
+          <div className="label"><span className="num">05</span> Retorno social</div>
+          <div>
+            <h2 className="h-section reveal">
+              Retorno <em>social</em><br/>
+              sobre o investimento.
+            </h2>
+            <p className="body-text reveal" data-d="1" style={{ marginTop: 24, fontFamily: "var(--serif)", fontSize: 19 }}>
+              A integração de assistência e educação gera economias ao evitar custos futuros com doenças,
+              desemprego crônico e instabilidade social.
+            </p>
+          </div>
+        </div>
+
+        <div className="roi">
+          <div className="roi-card reveal" data-d="1">
+            <div className="kicker kicker--ink" style={{ color: "var(--ink-soft)" }}>SROI</div>
+            <div className="roi-num">12<em>:1</em></div>
+            <div>
+              <div className="roi-org">CUFA</div>
+              <div className="roi-desc">Literacia financeira e empreendedorismo para crianças e adultos.</div>
+            </div>
+          </div>
+          <div className="roi-card reveal" data-d="2">
+            <div className="kicker kicker--ink" style={{ color: "var(--ink-soft)" }}>Camboja</div>
+            <div className="roi-num">Alto</div>
+            <div>
+              <div className="roi-org">KHANA</div>
+              <div className="roi-desc">Cuidados integrados para crianças órfãs e vulneráveis — segurança alimentar + saúde.</div>
+            </div>
+          </div>
+          <div className="roi-card reveal" data-d="3">
+            <div className="kicker kicker--ink" style={{ color: "var(--ink-soft)" }}>Custo / criança / ano</div>
+            <div className="roi-num">&lt;<em>$10</em></div>
+            <div>
+              <div className="roi-org">TaRL Global</div>
+              <div className="roi-desc">Custo unitário para ganhos de aprendizagem robustos em larga escala.</div>
+            </div>
+          </div>
+          <div className="roi-card reveal" data-d="4">
+            <div className="kicker kicker--ink" style={{ color: "var(--ink-soft)" }}>Brasil · DPI</div>
+            <div className="roi-num">Preventivo</div>
+            <div>
+              <div className="roi-org">Criança Feliz</div>
+              <div className="roi-desc">Redução futura de gastos com educação corretiva e sistema de justiça.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ---------- Section: Implementação ----------
+function SectionImplementacao() {
+  return (
+    <section className="section">
+      <div className="container">
+        <div className="section-head">
+          <div className="label"><span className="num">06</span> Implementação</div>
+          <div>
+            <h2 className="h-section reveal">
+              Barreiras &amp;<br/>
+              <em>fatores de sucesso</em>.
+            </h2>
+            <p className="body-text reveal" data-d="1" style={{ marginTop: 24, fontFamily: "var(--serif)", fontSize: 19 }}>
+              A superioridade dos modelos integrados na teoria enfrenta obstáculos concretos na prática.
+            </p>
+          </div>
+        </div>
+
+        <div className="bullets-2 reveal">
+          <div className="bullets-col">
+            <h4><span className="marker">— Barreiras</span></h4>
+            <ul>
+              <li><span className="idx">B.01</span><span>Fragmentação governamental e ausência de coordenação intersetorial.</span></li>
+              <li><span className="idx">B.02</span><span>Carga de trabalho excessiva e financiamento instável das equipes.</span></li>
+              <li><span className="idx">B.03</span><span>Baixa confiança comunitária nas instituições.</span></li>
+              <li><span className="idx">B.04</span><span>Expansão acelerada sem controle de qualidade.</span></li>
+              <li><span className="idx">B.05</span><span>Resistência dos professores ao desvio do currículo oficial.</span></li>
+            </ul>
+          </div>
+          <div className="bullets-col bullets-col--good">
+            <h4><span className="marker" style={{ color: "var(--accent)" }}>+ Sucesso</span></h4>
+            <ul>
+              <li><span className="idx">S.01</span><span>Liderança engajada e comunicação interdisciplinar forte.</span></li>
+              <li><span className="idx">S.02</span><span>Agentes comunitários locais (trusted peers) como mediadores.</span></li>
+              <li><span className="idx">S.03</span><span>Monitoramento em tempo real com ajustes baseados em dados.</span></li>
+              <li><span className="idx">S.04</span><span>Infraestrutura digital para coordenação e coleta de dados.</span></li>
+              <li><span className="idx">S.05</span><span>Parcerias institucionais que transcendem mandatos políticos.</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ---------- Section: Recomendações ----------
+function SectionDiretrizes() {
+  const recs = [
+    ["01", "Adotar o modelo \u201CCash Plus\u201D", "A transferência de renda deve ser o ponto de entrada para serviços complementares de educação, saúde e DPI."],
+    ["02", "Investir em DPI integrado", "A maior taxa de retorno social ocorre com nutrição + estímulo cognitivo + apoio psicossocial nos primeiros anos de vida."],
+    ["03", "Fortalecer a capacidade local", "Agentes comunitários e ferramentas digitais são essenciais para coleta de dados e decisão em tempo real."],
+    ["04", "Priorizar qualidade antes da escala", "A diluição da qualidade é a principal causa do fracasso de programas integrados em expansão acelerada."],
+    ["05", "Utilizar métricas sociais robustas", "Metodologias como SROI demonstram valor além do PIB, facilitando o convencimento de doadores e ministérios."],
+  ];
+  return (
+    <section className="section" id="diretrizes" style={{ paddingBottom: 0 }}>
+      <div className="container">
+        <div className="section-head">
+          <div className="label"><span className="num">07</span> Recomendações estratégicas</div>
+          <div>
+            <h2 className="h-section reveal">
+              Cinco diretrizes para<br/>
+              <em>formuladores de políticas</em>.
+            </h2>
+            <p className="body-text reveal" data-d="1" style={{ marginTop: 24, fontFamily: "var(--serif)", fontSize: 19 }}>
+              Derivadas do conjunto de evidências analisadas neste relatório.
+            </p>
+          </div>
+        </div>
+
+        <div className="recs">
+          {recs.map(([n, t, d], i) => (
+            <article className="rec reveal" key={n} data-d={String((i % 4) + 1)}>
+              <div className="rec-num">{n}</div>
+              <div>
+                <h3 className="rec-title">{t}</h3>
+                <p className="rec-text">{d}</p>
+              </div>
+              <div className="rec-arrow">→</div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ---------- CTA ----------
+function CTA() {
+  return (
+    <section className="cta" id="cta">
+      <div className="container">
+        <div className="cta-grid">
+          <div className="reveal">
+            <div className="kicker" style={{ marginBottom: 16 }}>— Próximos passos</div>
+            <h2>Da evidência<br/> à <em>política pública</em>.</h2>
+          </div>
+          <div className="reveal" data-d="1">
+            <p>
+              Acesse o relatório completo, a base de RCTs catalogados e nossos guias práticos
+              para desenho de programas integrados em educação e assistência social.
+            </p>
+            <div className="cta-actions">
+              <a href="#" className="btn btn-primary">
+                Baixar PDF completo <span className="arrow">→</span>
+              </a>
+              <a href="#" className="btn btn-ghost">
+                Falar com a equipe <span className="arrow">↗</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ---------- Footer ----------
+function Footer() {
+  return (
+    <footer className="foot">
+      <div className="container">
+        <div className="row">
+          <div>
+            <a href="#" className="brand">
+              <img src="logo.png" alt="Instituto Ambikira" className="brand-logo brand-logo--lg" />
+            </a>
+            <p>
+              Pesquisa aplicada em desenvolvimento humano, educação e assistência social.
+              Síntese de evidências para formuladores de políticas e organizações de impacto.
+            </p>
+          </div>
+          <div>
+            <h5>Relatório</h5>
+            <ul>
+              <li><a href="#problema">Problema</a></li>
+              <li><a href="#programas">Programas</a></li>
+              <li><a href="#sinergia">Sinergia</a></li>
+              <li><a href="#evidencias">Evidências</a></li>
+              <li><a href="#diretrizes">Diretrizes</a></li>
+            </ul>
+          </div>
+          <div>
+            <h5>Fontes</h5>
+            <ul>
+              <li>J-PAL</li>
+              <li>3ie</li>
+              <li>IPA</li>
+              <li>Banco Mundial</li>
+              <li>BRAC · Pratham · CAMFED</li>
+            </ul>
+          </div>
+          <div>
+            <h5>Contato</h5>
+            <ul>
+              <li>contato@ambikira.org</li>
+              <li>Imprensa</li>
+              <li>Parcerias institucionais</li>
+              <li>Newsletter mensal</li>
+            </ul>
+          </div>
+        </div>
+        <div className="legal">
+          <span>© 2025 Ambikira · Todos os direitos reservados</span>
+          <span>Vol. 01 · Edição revisada</span>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+Object.assign(window, {
+  Hero, SectionProblema, SectionProgramas, SectionSinergia,
+  SectionEvidencias, SectionROI, SectionImplementacao,
+  SectionDiretrizes, CTA, Footer, PullQuote,
+});
