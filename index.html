@@ -1,397 +1,138 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Eficácia de Intervenções Multidisciplinares</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
-<style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f8f7f4; color: #1a1a18; line-height: 1.6; }
-  
-  .hero { background: #0c2340; color: #fff; padding: 72px 48px 64px; }
-  .hero-tag { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: #7aafd4; margin-bottom: 20px; }
-  .hero h1 { font-size: 32px; font-weight: 400; max-width: 680px; line-height: 1.3; margin-bottom: 20px; }
-  .hero h1 strong { font-weight: 600; }
-  .hero-sub { font-size: 15px; color: #afc9e0; max-width: 580px; line-height: 1.7; }
+/* global React */
+const { useEffect, useRef, useState } = React;
 
-  .section { padding: 56px 48px; }
-  .section:nth-child(even) { background: #fff; }
-  .section-label { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: #888780; margin-bottom: 12px; }
-  .section h2 { font-size: 22px; font-weight: 500; margin-bottom: 8px; color: #1a1a18; }
-  .section-lead { font-size: 16px; color: #444441; max-width: 700px; line-height: 1.7; margin-bottom: 32px; }
-
-  .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 32px; }
-  .stat { background: #f1efe8; border-radius: 8px; padding: 20px; }
-  .stat-val { font-size: 28px; font-weight: 500; color: #0c2340; line-height: 1; margin-bottom: 6px; }
-  .stat-label { font-size: 12px; color: #5f5e5a; line-height: 1.4; }
-
-  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
-  .card { background: #fff; border: 0.5px solid #d3d1c7; border-radius: 12px; padding: 24px; }
-  .card-tag { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 10px; }
-  .card h3 { font-size: 16px; font-weight: 500; margin-bottom: 8px; }
-  .card p { font-size: 13px; color: #5f5e5a; line-height: 1.6; margin-bottom: 10px; }
-  .card-badge { display: inline-block; font-size: 11px; padding: 3px 10px; border-radius: 4px; font-weight: 500; }
-  .badge-blue { background: #b5d4f4; color: #0c447c; }
-  .badge-green { background: #c0dd97; color: #27500a; }
-  .badge-teal { background: #9fe1cb; color: #085041; }
-  .badge-amber { background: #fac775; color: #633806; }
-
-  .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 24px; }
-  .compare-col { border-radius: 10px; padding: 24px; }
-  .compare-col.alone { background: #f8f7f4; border: 0.5px solid #d3d1c7; }
-  .compare-col.integrated { background: #e6f1fb; border: 2px solid #378add; }
-  .compare-col h4 { font-size: 14px; font-weight: 500; margin-bottom: 12px; }
-  .compare-col ul { list-style: none; padding: 0; }
-  .compare-col ul li { font-size: 13px; color: #444441; padding: 6px 0; border-bottom: 0.5px solid rgba(0,0,0,0.07); display: flex; gap: 8px; align-items: flex-start; }
-  .compare-col ul li::before { content: ''; width: 6px; height: 6px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
-  .compare-col.alone ul li::before { background: #888780; }
-  .compare-col.integrated ul li::before { background: #378add; }
-  .integrated-label { display: inline-block; font-size: 11px; background: #378add; color: #fff; padding: 2px 8px; border-radius: 4px; margin-bottom: 12px; }
-
-  .evidence-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 16px; }
-  .evidence-table th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: #888780; padding: 8px 12px; border-bottom: 1px solid #d3d1c7; }
-  .evidence-table td { padding: 12px; border-bottom: 0.5px solid #e8e6e0; vertical-align: top; color: #2c2c2a; }
-  .evidence-table tr:hover td { background: #f8f7f4; }
-  .impact-pill { display: inline-block; font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 4px; }
-  .high { background: #c0dd97; color: #27500a; }
-  .very-high { background: #9fe1cb; color: #085041; }
-  .moderate { background: #fac775; color: #633806; }
-
-  .sroi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-top: 24px; }
-  .sroi-card { background: #fff; border: 0.5px solid #d3d1c7; border-radius: 12px; padding: 24px; text-align: center; }
-  .sroi-val { font-size: 36px; font-weight: 500; color: #0c2340; line-height: 1; }
-  .sroi-org { font-size: 13px; font-weight: 500; margin: 8px 0 4px; color: #2c2c2a; }
-  .sroi-desc { font-size: 12px; color: #888780; }
-
-  .barriers-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 24px; }
-  .barriers-col h4 { font-size: 14px; font-weight: 500; margin-bottom: 12px; display: flex; gap: 8px; align-items: center; }
-  .barriers-col ul { list-style: none; padding: 0; }
-  .barriers-col ul li { font-size: 13px; color: #444441; padding: 8px 0; border-bottom: 0.5px solid #e8e6e0; }
-
-  .recs { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 24px; }
-  .rec { background: #0c2340; border-radius: 10px; padding: 20px; }
-  .rec-num { font-size: 11px; color: #7aafd4; margin-bottom: 8px; letter-spacing: 0.08em; }
-  .rec h4 { font-size: 14px; font-weight: 500; color: #fff; margin-bottom: 6px; }
-  .rec p { font-size: 12px; color: #afc9e0; line-height: 1.5; }
-
-  .footer { background: #1a1a18; color: #888780; padding: 32px 48px; font-size: 12px; line-height: 1.7; }
-  .footer strong { color: #d3d1c7; }
-
-  .chart-wrap { position: relative; width: 100%; height: 280px; margin-top: 24px; }
-
-  @media (max-width: 640px) {
-    .hero, .section { padding: 40px 24px; }
-    .hero h1 { font-size: 24px; }
-    .compare-grid, .barriers-grid { grid-template-columns: 1fr; }
-  }
-</style>
-</head>
-<body>
-
-<section class="hero">
-  <div class="hero-tag">Relatório de evidências — 2025</div>
-  <h1>Eficácia das <strong>Intervenções Multidisciplinares</strong> em Educação e Assistência Social</h1>
-  <p class="hero-sub">Evidências de ensaios controlados aleatórios em países em desenvolvimento mostram que a integração de educação, renda e saúde gera impactos superiores e duradouros em comparação com intervenções isoladas.</p>
-</section>
-
-<section class="section">
-  <div class="section-label">O problema</div>
-  <h2>A crise de aprendizagem e a pobreza multidimensional</h2>
-  <p class="section-lead">A vulnerabilidade social não é uma condição unidimensional. Enquanto o acesso à escola cresceu, a qualidade da aprendizagem e o ciclo da pobreza permanecem desafios centrais.</p>
-  <div class="stat-grid">
-    <div class="stat">
-      <div class="stat-val">70%</div>
-      <div class="stat-label">das crianças em países de baixa renda não conseguem ler uma história simples aos 10 anos</div>
-    </div>
-    <div class="stat">
-      <div class="stat-val">2.500+</div>
-      <div class="stat-label">avaliações de impacto catalogadas pela 3ie em países de baixa e média renda</div>
-    </div>
-    <div class="stat">
-      <div class="stat-val">6</div>
-      <div class="stat-label">países avaliados em simultâneo pelo estudo da Abordagem de Graduação (BRAC)</div>
-    </div>
-    <div class="stat">
-      <div class="stat-val">18–36</div>
-      <div class="stat-label">meses de duração dos programas de graduação multidisciplinar com impactos persistentes</div>
-    </div>
-  </div>
-</section>
-
-<section class="section">
-  <div class="section-label">Intervenções com evidência</div>
-  <h2>O que funciona — e por quê</h2>
-  <p class="section-lead">Quatro modelos rigorosamente avaliados que combinam educação, renda e suporte psicossocial.</p>
-  <div class="cards">
-    <div class="card">
-      <div class="card-tag" style="color:#185fa5;">Educação</div>
-      <h3>Teaching at the Right Level (TaRL)</h3>
-      <p>Desenvolvido pela Pratham (Índia), o TaRL adapta o ensino ao nível real da criança. Seis avaliações aleatórias em sete estados produziram os maiores ganhos de aprendizagem registrados na literatura.</p>
-      <span class="card-badge badge-blue">Menos de US$10 por criança/ano</span>
-    </div>
-    <div class="card">
-      <div class="card-tag" style="color:#0f6e56;">Assistência Social</div>
-      <h3>Abordagem de Graduação (BRAC)</h3>
-      <p>Integra transferência de ativos, suporte ao consumo, treinamento técnico, coaching domiciliar e poupança ao longo de 18–36 meses. Impactos persistentes comprovados em 6 países por RCTs.</p>
-      <span class="card-badge badge-teal">Ganhos mantidos 3 anos após o fim</span>
-    </div>
-    <div class="card">
-      <div class="card-tag" style="color:#3b6d11;">Educação + Renda</div>
-      <h3>CAMFED — África Subsaariana</h3>
-      <p>Combina apoio financeiro direto para meninas em situação de pobreza com suporte pedagógico, mentoria e programas de vida. Reduz abandono e melhora escores em inglês e matemática.</p>
-      <span class="card-badge badge-green">Empoderamento feminino + aprendizagem</span>
-    </div>
-    <div class="card">
-      <div class="card-tag" style="color:#854f0b;">DPI Integrado</div>
-      <h3>Criança Feliz (Brasil)</h3>
-      <p>Maior programa global de visitação domiciliar para DPI, integrando o SUAS com ações multissetoriais. Expandido para mais de 3.000 municípios, com desafios de fidelidade na implementação.</p>
-      <span class="card-badge badge-amber">57 milhões de visitas anuais</span>
-    </div>
-  </div>
-</section>
-
-<section class="section">
-  <div class="section-label">Sinergia</div>
-  <h2>Por que a integração supera modelos isolados</h2>
-  <p class="section-lead">Estudo de Burkina Faso (Banco Mundial): apenas o grupo com pacote completo — dinheiro + visitas domiciliares — manteve melhorias duradouras em educação e saúde 15 meses após o fim da intervenção.</p>
-  <div class="compare-grid">
-    <div class="compare-col alone">
-      <h4>Intervenções isoladas</h4>
-      <ul>
-        <li>Transferência de renda: aumenta matrícula, mas impacto em aprendizagem é pequeno ou nulo</li>
-        <li>TaRL sem suporte familiar: professores resistem a desviar do currículo oficial</li>
-        <li>Visitas domiciliares sem assistência complementar: insegurança alimentar compromete eficácia</li>
-        <li>Saúde mental sem rede social: efeitos de curto prazo sem sustentabilidade</li>
-      </ul>
-    </div>
-    <div class="compare-col integrated">
-      <div class="integrated-label">Recomendado</div>
-      <h4>Abordagem multidisciplinar integrada</h4>
-      <ul>
-        <li>Cash Plus: renda + serviços educacionais gera impactos que o dinheiro isolado não produz</li>
-        <li>Graduação: coaching + ativos + saúde ataca simultaneamente renda, habilidades e motivação</li>
-        <li>DPI integrado: nutrição + estímulo cognitivo + apoio psicossocial nos primeiros anos de vida</li>
-        <li>Suporte social mediador: 57% do efeito em saúde mental é mediado pela rede de suporte social</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<section class="section">
-  <div class="section-label">Dados de impacto</div>
-  <h2>Evidências por programa e país</h2>
-  <p class="section-lead">Resultados de ensaios controlados aleatórios (RCTs) e avaliações quase-experimentais.</p>
-  <table class="evidence-table">
-    <thead>
-      <tr>
-        <th>Programa</th>
-        <th>Localização</th>
-        <th>Impacto principal</th>
-        <th>Nível de evidência</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><strong>TaRL</strong></td>
-        <td>Índia (7 estados)</td>
-        <td>Maiores ganhos em competências básicas registrados na literatura global</td>
-        <td><span class="impact-pill very-high">RCT — muito alto</span></td>
-      </tr>
-      <tr>
-        <td><strong>TaRL</strong></td>
-        <td>Madagáscar</td>
-        <td>Melhora significativa nos escores de matemática (3ª série)</td>
-        <td><span class="impact-pill high">RCT — alto</span></td>
-      </tr>
-      <tr>
-        <td><strong>Catch Up</strong></td>
-        <td>Zâmbia</td>
-        <td>Escalado para 1.800 escolas; baixo custo por aluno</td>
-        <td><span class="impact-pill high">Parceria governamental</span></td>
-      </tr>
-      <tr>
-        <td><strong>Graduação BRAC</strong></td>
-        <td>Gana</td>
-        <td>+11% consumo total; poupança triplicada; ganhos mantidos pós-intervenção</td>
-        <td><span class="impact-pill very-high">RCT — muito alto</span></td>
-      </tr>
-      <tr>
-        <td><strong>Graduação BRAC</strong></td>
-        <td>Etiópia / Índia</td>
-        <td>Melhora em status psicossocial; aumento de renda não-agrícola</td>
-        <td><span class="impact-pill very-high">RCT 6 países</span></td>
-      </tr>
-      <tr>
-        <td><strong>Rede de segurança integrada</strong></td>
-        <td>Burkina Faso</td>
-        <td>Melhorias duradouras em educação e saúde reprodutiva apenas no grupo com pacote completo</td>
-        <td><span class="impact-pill high">Banco Mundial — RCT</span></td>
-      </tr>
-      <tr>
-        <td><strong>MDT Saúde Mental</strong></td>
-        <td>China (rural)</td>
-        <td>Redução drástica de ansiedade e depressão; 57% do efeito mediado por suporte social</td>
-        <td><span class="impact-pill high">Estudo controlado</span></td>
-      </tr>
-    </tbody>
-  </table>
-  <div class="chart-wrap">
-    <canvas id="impactChart" role="img" aria-label="Gráfico comparando impacto de intervenções isoladas versus integradas em cinco dimensões">Dados comparativos de impacto: intervenções isoladas têm impacto moderado; integradas têm impacto alto em todas as dimensões.</canvas>
-  </div>
-</section>
-
-<section class="section">
-  <div class="section-label">Retorno social</div>
-  <h2>Retorno social sobre o investimento (SROI)</h2>
-  <p class="section-lead">A integração de assistência e educação gera economias ao evitar custos futuros com doenças, desemprego crônico e instabilidade social.</p>
-  <div class="sroi-grid">
-    <div class="sroi-card">
-      <div class="sroi-val">12:1</div>
-      <div class="sroi-org">CUFA</div>
-      <div class="sroi-desc">Literacia financeira e empreendedorismo para crianças e adultos</div>
-    </div>
-    <div class="sroi-card">
-      <div class="sroi-val">Alto</div>
-      <div class="sroi-org">KHANA (Camboja)</div>
-      <div class="sroi-desc">Cuidados integrados para crianças órfãs e vulneráveis — segurança alimentar + saúde</div>
-    </div>
-    <div class="sroi-card">
-      <div class="sroi-val">&lt;US$10</div>
-      <div class="sroi-org">TaRL Global</div>
-      <div class="sroi-desc">Custo por criança por ano para ganhos de aprendizagem robustos</div>
-    </div>
-    <div class="sroi-card">
-      <div class="sroi-val">Preventivo</div>
-      <div class="sroi-org">Criança Feliz (Brasil)</div>
-      <div class="sroi-desc">Redução futura de gastos com educação corretiva e sistema de justiça</div>
-    </div>
-  </div>
-</section>
-
-<section class="section">
-  <div class="section-label">Implementação</div>
-  <h2>Barreiras e fatores de sucesso</h2>
-  <p class="section-lead">A superioridade dos modelos integrados na teoria enfrenta obstáculos concretos na prática.</p>
-  <div class="barriers-grid">
-    <div class="barriers-col">
-      <h4>Principais barreiras</h4>
-      <ul>
-        <li>Fragmentação governamental e ausência de coordenação intersetorial</li>
-        <li>Carga de trabalho excessiva e financiamento instável das equipes</li>
-        <li>Baixa confiança comunitária nas instituições</li>
-        <li>Expansão acelerada sem controle de qualidade (ex: Criança Feliz)</li>
-        <li>Resistência dos professores ao desvio do currículo oficial</li>
-      </ul>
-    </div>
-    <div class="barriers-col">
-      <h4>Fatores de sucesso</h4>
-      <ul>
-        <li>Liderança engajada e comunicação interdisciplinar forte</li>
-        <li>Agentes comunitários locais (trusted peers) como mediadores</li>
-        <li>Monitoramento em tempo real com ajustes baseados em dados</li>
-        <li>Infraestrutura digital para coordenação e coleta de dados</li>
-        <li>Parcerias institucionais que transcendem mandatos políticos</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<section class="section">
-  <div class="section-label">Recomendações estratégicas</div>
-  <h2>Cinco diretrizes para formuladores de políticas</h2>
-  <p class="section-lead">Derivadas do conjunto de evidências analisadas.</p>
-  <div class="recs">
-    <div class="rec">
-      <div class="rec-num">01</div>
-      <h4>Adotar o modelo "Cash Plus"</h4>
-      <p>A transferência de renda deve ser o ponto de entrada para serviços complementares de educação, saúde e DPI.</p>
-    </div>
-    <div class="rec">
-      <div class="rec-num">02</div>
-      <h4>Investir em DPI integrado</h4>
-      <p>A maior taxa de retorno social ocorre com nutrição + estímulo cognitivo + apoio psicossocial nos primeiros anos de vida.</p>
-    </div>
-    <div class="rec">
-      <div class="rec-num">03</div>
-      <h4>Fortalecer a capacidade local</h4>
-      <p>Agentes comunitários e ferramentas digitais são essenciais para coleta de dados e decisão em tempo real.</p>
-    </div>
-    <div class="rec">
-      <div class="rec-num">04</div>
-      <h4>Priorizar qualidade antes da escala</h4>
-      <p>A diluição da qualidade é a principal causa do fracasso de programas integrados em expansão acelerada.</p>
-    </div>
-    <div class="rec">
-      <div class="rec-num">05</div>
-      <h4>Utilizar métricas sociais robustas</h4>
-      <p>Metodologias como SROI demonstram valor além do PIB, facilitando o convencimento de doadores e ministérios.</p>
-    </div>
-  </div>
-</section>
-
-<footer class="footer">
-  <strong>Fontes e metodologia</strong><br>
-  Este relatório sintetiza avaliações de impacto de J-PAL (Abdul Latif Jameel Poverty Action Lab), 3ie (International Initiative for Impact Evaluation), IPA (Innovations for Poverty Action), Banco Mundial e publicações revisadas por pares. Metodologias incluem ensaios controlados aleatórios (RCTs), diferenças em diferenças e descontinuidade de regressão. Para a lista completa de referências, consulte o documento-fonte.
-</footer>
-
-<script>
-const ctx = document.getElementById('impactChart').getContext('2d');
-new Chart(ctx, {
-  type: 'bar',
-  data: {
-    labels: ['Aprendizagem', 'Renda / ativos', 'Saúde', 'Bem-estar psicossocial', 'Sustentabilidade'],
-    datasets: [
-      {
-        label: 'Intervenção isolada',
-        data: [35, 40, 30, 25, 28],
-        backgroundColor: '#d3d1c7',
-        borderColor: '#b4b2a9',
-        borderWidth: 0.5
-      },
-      {
-        label: 'Intervenção integrada',
-        data: [82, 88, 75, 85, 80],
-        backgroundColor: '#378add',
-        borderColor: '#185fa5',
-        borderWidth: 0.5
-      }
-    ]
-  },
-  options: {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: { display: false },
-      tooltip: {
-        callbacks: {
-          label: ctx => ctx.dataset.label + ': ' + ctx.parsed.y + '/100'
-        }
-      }
-    },
-    scales: {
-      x: { grid: { display: false }, ticks: { font: { size: 12 } } },
-      y: {
-        max: 100,
-        ticks: {
-          callback: v => v,
-          font: { size: 11 }
-        },
-        grid: { color: 'rgba(0,0,0,0.05)' }
-      }
+// ---------- Reveal on scroll ----------
+function useReveal() {
+  useEffect(() => {
+    const els = document.querySelectorAll(".reveal");
+    if (!("IntersectionObserver" in window)) {
+      els.forEach(e => e.classList.add("visible"));
+      return;
     }
-  }
-});
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(en => {
+        if (en.isIntersecting) {
+          en.target.classList.add("visible");
+          io.unobserve(en.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: "0px 0px -8% 0px" });
+    els.forEach(e => io.observe(e));
+    return () => io.disconnect();
+  }, []);
+}
 
-const canvas = document.getElementById('impactChart');
-const legendContainer = document.createElement('div');
-legendContainer.style.cssText = 'display:flex;gap:20px;justify-content:center;margin-top:10px;font-size:12px;color:#5f5e5a;';
-legendContainer.innerHTML = `
-  <span style="display:flex;align-items:center;gap:5px;"><span style="width:12px;height:12px;border-radius:2px;background:#d3d1c7;display:inline-block;"></span>Intervenção isolada</span>
-  <span style="display:flex;align-items:center;gap:5px;"><span style="width:12px;height:12px;border-radius:2px;background:#378add;display:inline-block;"></span>Intervenção integrada</span>
-`;
-canvas.parentElement.insertAdjacentElement('afterend', legendContainer);
-</script>
+// ---------- Nav ----------
+function Nav() {
+  const [hidden, setHidden] = useState(false);
+  const lastY = useRef(0);
+  useEffect(() => {
+    const onScroll = () => {
+      const y = window.scrollY;
+      setHidden(y > 200 && y > lastY.current);
+      lastY.current = y;
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
-</body>
-</html>
+  return (
+    <nav className="nav" style={{ transform: hidden ? "translateY(-100%)" : "none" }}>
+      <div className="container nav-inner">
+        <a href="#" className="brand">
+          <img src="logo.png" alt="Instituto Ambikira" className="brand-logo" width="120" height="22" />
+          <small>Relatório · 2025</small>
+        </a>
+        <div className="nav-links">
+          <a href="#problema">Problema</a>
+          <a href="#programas">Programas</a>
+          <a href="#sinergia">Sinergia</a>
+          <a href="#evidencias">Evidências</a>
+          <a href="#diretrizes">Diretrizes</a>
+        </div>
+        <a href="#cta" className="nav-cta">
+          Baixar relatório
+          <span aria-hidden="true">↓</span>
+        </a>
+      </div>
+    </nav>
+  );
+}
+
+// ---------- Marquee ----------
+function Marquee() {
+  const items = [
+    "J-PAL", "3ie", "IPA", "BRAC", "PRATHAM", "Banco Mundial",
+    "CAMFED", "Criança Feliz", "TaRL", "KHANA", "CUFA",
+  ];
+  const line = (
+    <span>
+      {items.map((it, i) => (
+        <React.Fragment key={i}>{it}</React.Fragment>
+      )).reduce((acc, el, i) => acc.concat(i ? [el] : [el]), [])}
+    </span>
+  );
+  // Build manually for separators
+  const renderLine = (key) => (
+    <span key={key}>
+      {items.flatMap((it, i) => [
+        <span key={i} style={{ marginRight: 56 }}>{it}</span>,
+      ])}
+    </span>
+  );
+  return (
+    <div className="marquee">
+      <div className="marquee-track">
+        {renderLine("a")}
+        {renderLine("b")}
+      </div>
+    </div>
+  );
+}
+
+// ---------- Stat ----------
+function Stat({ num, sup, label, desc, d }) {
+  return (
+    <div className="stat reveal" data-d={d}>
+      <div className="label-row">
+        <span>{label}</span>
+        <span className="mono">↗</span>
+      </div>
+      <div className="num-big">
+        {num}{sup && <sup>{sup}</sup>}
+      </div>
+      <div className="desc">{desc}</div>
+    </div>
+  );
+}
+
+// ---------- Program card ----------
+function Program({ tag, num, title, desc, meta, d }) {
+  return (
+    <article className="program reveal" data-d={d}>
+      <span className="num">{num}</span>
+      <span className="tag">{tag}</span>
+      <h3>{title}</h3>
+      <p>{desc}</p>
+      <div className="meta">
+        <span>{meta}</span>
+        <span className="arrow" aria-hidden="true">→</span>
+      </div>
+    </article>
+  );
+}
+
+// ---------- Bar row ----------
+function BarRow({ label, value, width }) {
+  return (
+    <div className="bar-row reveal">
+      <div className="lbl">{label}</div>
+      <div className="bar-track">
+        <div className="bar-fill" style={{ "--w": width }}></div>
+      </div>
+      <div className="val">{value}</div>
+    </div>
+  );
+}
+
+Object.assign(window, { useReveal, Nav, Marquee, Stat, Program, BarRow });
